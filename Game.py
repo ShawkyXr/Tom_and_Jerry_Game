@@ -1,11 +1,9 @@
-from time import sleep
-import os
-
-
+import  os
 
 class Game:
 
-    def __init__(self,h,w,cat,rat,exit,obs):
+    def __init__(self,h,w,cat,rat,exit,obs,level): # instialize the game
+        self.level = level
         self.grid_high = h
         self.grid_width = w
         self.grid = [['-' for i in range(self.grid_width)] for j in range(self.grid_high)]
@@ -14,11 +12,22 @@ class Game:
         self.exit = exit
         self.obstacles = obs
 
-    def start(self):
+    def start(self): # start the game
+        print ("Welcome to Tom and Jerry Game")
+
+        if (self.level==0):
+            print("Easy Mode")
+        elif (self.level==1):
+            print("Medium Mode")
+        else:
+            print("Hard Mode")
+
         self.build()
         self.display(False)
         self.play()
 
+
+    # build the game grid
     def build(self):
 
         self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
@@ -28,14 +37,18 @@ class Game:
         for obstacle in self.obstacles:
             self.grid[obstacle[0]][obstacle[1]] = '#' 
 
+
+
+    # play the game
     def play(self):
+
         while True:
 
-            self.move_rat()
+            self.move_rat() # take moves from player
 
-            self.move_cat()
+            self.move_cat() # move cat using BFS 
 
-            if (self.rat_pos == self.cat_pos):
+            if (self.rat_pos == self.cat_pos): # if cat eat the rat
                 self.grid[self.rat_pos[0]][self.rat_pos[1]] = 'X'
                 self.display(True)
                 print("Game Over :(")
@@ -48,7 +61,7 @@ class Game:
             self.display(True)
 
 
-
+    # to be dynamic in terminal
     def clear_terminal(self,k):
         if os.name == 'nt':
             os.system('cls')  # For Windows
@@ -58,7 +71,7 @@ class Game:
 
 
 
-    def display(self,clear):
+    def display(self,clear): # display the game grid
         if (clear):
             self.clear_terminal(self.grid_high+1)
         for i in range(self.grid_high):
@@ -66,21 +79,24 @@ class Game:
                 print(self.grid[i][j], end=' ')
             print()
 
-    def is_valid(self,pos):
+
+
+    def is_valid(self,pos): # position is valid or not
         return pos[0] >= 0 and pos[0] < self.grid_high and pos[1] >= 0 and pos[1] < self.grid_width and self.grid[pos[0]][pos[1]] != '#'
     
 
-    def move_rat(self):
-        print("Enter the direction to move the rat(up,down,left,right) : ", end='')
+
+    def move_rat(self): # move the rat
+        print("Enter the direction to move the rat(up 'U' ,down 'D' ,left 'L',right 'R') : ", end='')
         inp = input()
         new_pos = self.rat_pos
-        if (inp == 'up'):
+        if (inp == 'up' or inp == 'U'):
             new_pos = (self.rat_pos[0]-1,self.rat_pos[1])
-        elif (inp == 'down'):
+        elif (inp == 'down' or inp == 'D'):
             new_pos = (self.rat_pos[0]+1,self.rat_pos[1])
-        elif (inp == 'left'):
+        elif (inp == 'left' or inp == 'L'):
             new_pos = (self.rat_pos[0],self.rat_pos[1]-1)
-        elif (inp == 'right'):
+        elif (inp == 'right' or inp == 'R'):
             new_pos = (self.rat_pos[0],self.rat_pos[1]+1)
         else:
             return
@@ -91,6 +107,8 @@ class Game:
         self.rat_pos = new_pos
         self.grid[self.rat_pos[0]][self.rat_pos[1]] = 'J'
         return
+    
+
 
     def find_path(self,start,end): # BFS Search Algorithm
         visited = [[False for i in range(self.grid_width)] for j in range(self.grid_high)]
@@ -121,6 +139,7 @@ class Game:
         return path
 
 
+
     def move_cat(self):
         if (self.cat_pos == self.exit):
             return
@@ -149,9 +168,3 @@ class Game:
         self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
         return
 
-
-if __name__ == "__main__":
-    Easy = Game(5,5,(2,0),(1,3),(4,4),[(2,2),(2,4)])
-    Mediam = Game(5,5,(2,0),(1,3),(4,4),[(2,2),(2,4)])
-    Hard = Game(5,5,(2,0),(1,3),(4,4),[(2,2),(2,4)])
-    Easy.start()
