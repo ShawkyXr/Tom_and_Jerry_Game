@@ -151,13 +151,24 @@ class Game:
 
         to_rat = len(path_to_rat)
         to_exit = len(path_to_exit)
-
-        if (to_rat <= 3):
-            self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-            self.cat_pos = self.rat_pos
-            self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
-            return
-        
+        if(self.level == 0):
+            if (to_rat <= 2):
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+                return
+        elif(self.level == 1):    
+            if (to_rat <= 3):
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+                return
+        else:
+            if (to_rat <= 4):
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+                return
         if (to_rat < to_exit):
             new_pos = path_to_rat[1]
         else:
