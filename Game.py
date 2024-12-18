@@ -179,12 +179,22 @@ class Game:
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
                 self.cat_pos = self.rat_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+            else :
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                new_pos = path_to_exit[1]
+                self.cat_pos = new_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
                 return
         # For Hard Mode
         else:
             if (to_rat <= 4):
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
                 self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+            else:
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                new_pos = path_to_exit[1]
+                self.cat_pos = new_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
                 return
             
