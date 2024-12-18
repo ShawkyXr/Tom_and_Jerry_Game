@@ -55,6 +55,8 @@ class Game:
                 break
             
             if (self.rat_pos == self.exit):
+                self.grid[self.rat_pos[0]][self.rat_pos[1]] = '-'
+                self.grid[self.exit[0]][self.exit[1]] = 'W'
                 print("WOW! You Won")
                 break
                 
@@ -77,7 +79,7 @@ class Game:
         for i in range(self.grid_high):
             for j in range(self.grid_width):
                 cell = self.grid[i][j]
-                if (cell == 'J'):
+                if (cell == 'J' or cell == 'W'):
                     print (Style.BRIGHT + Fore.LIGHTGREEN_EX + cell + Style.RESET_ALL, end=' ')
                 elif (cell == 'T' or cell == 'X'):
                     print (Style.BRIGHT + Fore.LIGHTRED_EX + cell + Style.RESET_ALL, end=' ')
@@ -100,7 +102,7 @@ class Game:
         print("Enter the direction to move the rat(up 'U' ,down 'D' ,left 'L',right 'R') : ", end='')
         inp = input()
         new_pos = self.rat_pos
-        if (inp == 'up' or inp == 'U'):
+        if (inp == 'up' or inp == 'U' or inp == 'u'):
             new_pos = (self.rat_pos[0]-1,self.rat_pos[1])
         elif (inp == 'down' or inp == 'D' or inp == 'd'):
             new_pos = (self.rat_pos[0]+1,self.rat_pos[1])
