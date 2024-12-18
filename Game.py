@@ -160,61 +160,33 @@ class Game:
 
         path_to_rat = self.find_path(self.cat_pos,self.rat_pos)
         path_to_exit = self.find_path(self.cat_pos,self.exit)
-        rat_to_exit = self.find_path(self.rat_pos,self.exit)
 
         to_rat = len(path_to_rat)
         to_exit = len(path_to_exit)
-        rat_to_exit_len = len(rat_to_exit)
-
-        found_new_pos = False
-
-        if (to_exit < rat_to_exit_len):
+        if(self.level == 0):
+            if (to_rat <= 2):
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+                return
+        elif(self.level == 1):    
+            if (to_rat <= 3):
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+                return
+        else:
+            if (to_rat <= 4):
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+                self.cat_pos = self.rat_pos
+                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+                return
+        if (to_rat < to_exit):
+            new_pos = path_to_rat[1]
+        else:
             new_pos = path_to_exit[1]
-            found_new_pos = True
-            
-        if not found_new_pos:
-            if(self.level == 0):
-                if (to_rat <= 2):
-                    new_pos = path_to_rat[1]
-                    found_new_pos = True
-            elif(self.level == 1):    
-                if (to_rat <= 3):
-                    new_pos = path_to_rat[1]
-                    found_new_pos = True
-            else:
-                if (to_rat <= 3):
-                    new_pos = path_to_rat[1]
-                    found_new_pos = True
-                    
-                if not found_new_pos:
-                    print("Cat is thinking")
-                    up_right = (self.cat_pos[0]-1,self.cat_pos[1]+1)
-                    up_left = (self.cat_pos[0]-1,self.cat_pos[1]-1)
-                    down_right = (self.cat_pos[0]+1,self.cat_pos[1]+1)
-                    down_left = (self.cat_pos[0]+1,self.cat_pos[1]-1)
-                    if (self.is_valid(up_right) and self.grid[up_right[0]][up_right[1]] == 'J'):
-                        new_pos = up_right
-                        found_new_pos = True
-                    elif (self.is_valid(up_left) and self.grid[up_left[0]][up_left[1]] == 'J'):
-                        new_pos = up_left
-                        found_new_pos = True
-                    elif (self.is_valid(down_right) and self.grid[down_right[0]][down_right[1]] == 'J'):
-                        new_pos = down_right
-                        found_new_pos = True
-                    elif (self.is_valid(down_left) and self.grid[down_left[0]][down_left[1]] == 'J'):
-                        new_pos = down_left
-                        found_new_pos = True
-                    
-                
-                
-        if not found_new_pos:       
-            if (to_rat < to_exit):
-                new_pos = path_to_rat[1]
-            else:
-                new_pos = path_to_exit[1]
 
         self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
         self.cat_pos = new_pos
         self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
         return
-
