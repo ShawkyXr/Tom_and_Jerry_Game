@@ -165,46 +165,33 @@ class Game:
         to_rat = len(path_to_rat)
         to_exit = len(path_to_exit)
         rat_to_exit = len(path_rat_to_exit)
-
-        # For Easy Mode
+        
         if(self.level == 0):
             if (to_rat <= 2):
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-                self.cat_pos = self.rat_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
-                return
-        # For Medium Mode
-        elif(self.level == 1):    
-            if (to_rat <= 3):
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-                self.cat_pos = self.rat_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
-                return
-            else :
-                new_pos = path_to_exit[1]
+                new_pos = self.rat_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
                 self.cat_pos = new_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
                 return
-        # For Hard Mode
-        else:
-            if (to_rat <= 4):
+        elif(self.level == 1):    
+            if (to_rat <= 3):
+                new_pos = self.rat_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-                self.cat_pos = self.rat_pos
+                self.cat_pos = new_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
                 return
-            else:
-                new_pos = path_to_exit[1]
+        else:
+            if (to_rat <= 4):
+                new_pos = self.rat_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
                 self.cat_pos = new_pos
                 self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
                 return
             
-        # For All Modes
-        if (to_exit < rat_to_exit or to_exit < to_rat):
-            new_pos = path_to_exit[1]
-        else:
+        if (to_rat < to_exit):
             new_pos = path_to_rat[1]
+        else:
+            new_pos = path_to_exit[1]
 
         self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
         self.cat_pos = new_pos
