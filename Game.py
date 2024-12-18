@@ -1,4 +1,5 @@
 import  os
+from colorama import Fore, Back, Style
 
 class Game:
 
@@ -38,7 +39,6 @@ class Game:
             self.grid[obstacle[0]][obstacle[1]] = '#' 
 
 
-
     # play the game
     def play(self):
 
@@ -76,7 +76,17 @@ class Game:
             self.clear_terminal(self.grid_high+1)
         for i in range(self.grid_high):
             for j in range(self.grid_width):
-                print(self.grid[i][j], end=' ')
+                cell = self.grid[i][j]
+                if (cell == 'J'):
+                    print (Style.BRIGHT + Fore.LIGHTGREEN_EX + cell + Style.RESET_ALL, end=' ')
+                elif (cell == 'T' or cell == 'X'):
+                    print (Style.BRIGHT + Fore.LIGHTRED_EX + cell + Style.RESET_ALL, end=' ')
+                elif (cell == 'E'):
+                    print (Style.BRIGHT + Fore.LIGHTBLUE_EX + cell + Style.RESET_ALL, end=' ')
+                elif (cell == '#'):
+                    print (Style.BRIGHT + Fore.YELLOW + cell + Style.RESET_ALL, end=' ')
+                else:
+                    print (cell, end=' ')
             print()
 
 
@@ -92,11 +102,11 @@ class Game:
         new_pos = self.rat_pos
         if (inp == 'up' or inp == 'U'):
             new_pos = (self.rat_pos[0]-1,self.rat_pos[1])
-        elif (inp == 'down' or inp == 'D'):
+        elif (inp == 'down' or inp == 'D' or inp == 'd'):
             new_pos = (self.rat_pos[0]+1,self.rat_pos[1])
-        elif (inp == 'left' or inp == 'L'):
+        elif (inp == 'left' or inp == 'L' or inp == 'l'):
             new_pos = (self.rat_pos[0],self.rat_pos[1]-1)
-        elif (inp == 'right' or inp == 'R'):
+        elif (inp == 'right' or inp == 'R' or inp == 'r'):
             new_pos = (self.rat_pos[0],self.rat_pos[1]+1)
         else:
             return
