@@ -20,6 +20,7 @@ if __name__ == "__main__":
         else:
             map = random.randint(1,2)
         level = input("Select the level of the game (Easy '0' , Medium '1' , Hard '2') : ")
+        os.system('cls' if os.name == 'nt' else 'clear') 
         # chek  if the input is valid
         if(int(level) < 0 or int(level) > 2):
             while(int(level) < 0 or int(level) > 2):
