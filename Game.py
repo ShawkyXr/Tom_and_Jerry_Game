@@ -1,5 +1,5 @@
 import  os
-from colorama import Fore, Back, Style
+from colorama import Fore, Style
 
 class Game:
 
@@ -46,7 +46,7 @@ class Game:
 
             self.move_rat() # take moves from player
 
-            self.move_cat() # move cat using BFS 
+            self.move_cat() 
 
             if (self.rat_pos == self.cat_pos): # if cat eat the rat
                 self.grid[self.rat_pos[0]][self.rat_pos[1]] = 'X'
@@ -57,6 +57,7 @@ class Game:
             if (self.rat_pos == self.exit):
                 self.grid[self.rat_pos[0]][self.rat_pos[1]] = '-'
                 self.grid[self.exit[0]][self.exit[1]] = 'W'
+                self.display(True)
                 print("WOW! You Won")
                 break
                 
@@ -122,34 +123,57 @@ class Game:
     
 
 
-    def find_path(self,start,end): # BFS Search Algorithm
-        visited = [[False for i in range(self.grid_width)] for j in range(self.grid_high)]
-        queue = []
-        queue.append(start)
-        visited[start[0]][start[1]] = True
-        parent = {}
-        while queue:
-            node = queue.pop(0)
-            if (node == end):
-                break
-            directions = [(0,1),(0,-1),(1,0),(-1,0)]
-            for dir in directions:
-                new_pos = (node[0]+dir[0],node[1]+dir[1])
-                if (self.is_valid(new_pos) and not visited[new_pos[0]][new_pos[1]]):
-                    queue.append(new_pos)
-                    visited[new_pos[0]][new_pos[1]] = True
-                    parent[new_pos] = node
-                    
-        path = []
+    def find_path(self,start,end): # A* Search Algorithm
+        def h(pos):
+            return abs(pos[0]-end[0]) + abs(pos[1]-end[1])
+        
+        def g(pos):
+            return abs(pos[0]-start[0]) + abs(pos[1]-start[1])
+        
+        
+        def is_valid(pos):
+            return pos[0] >= 0 and pos[0] < self.grid_high and pos[1] >= 0 and pos[1] < self.grid_width and self.grid[pos[0]][pos[1]] != '#'
+        
+        def get_neighbours(pos):
+            neighbours = []
+            for i,j in [(-1,0),(1,0),(0,-1),(0,1)]:
+                new_pos = (pos[0]+i,pos[1]+j)
+                if (is_valid(new_pos)):
+                    neighbours.append(new_pos)
+            return neighbours
+        
+        open_list = [start]
+        closed_list = []
+        came_from = {}
+        g_score = {start:0}
+        f_score = {start:h(start)}
 
-        while end != start:
-            path.append(end)
-            end = parent[end]
-        path.append(start)
-        path.reverse()
+        while open_list:
+            current = min(open_list,key=lambda x:f_score[x])
+            if (current == end):
+                path = []
+                while current in came_from:
+                    path.insert(0,current)
+                    current = came_from[current]
+                return path
 
-        return path
+            open_list.remove(current)
+            closed_list.append(current)
 
+            for neighbour in get_neighbours(current):
+                if neighbour in closed_list:
+                    continue
+                tentative_g_score = g_score[current] + 1
+                if neighbour not in open_list:
+                    open_list.append(neighbour)
+                elif tentative_g_score >= g_score[neighbour]:
+                    continue
+                
+                came_from[neighbour] = current
+                g_score[neighbour] = tentative_g_score
+                f_score[neighbour] = g_score[neighbour] + h(neighbour)
+
+        return []
 
 
     def move_cat(self):
@@ -160,37 +184,24 @@ class Game:
 
         path_to_rat = self.find_path(self.cat_pos,self.rat_pos)
         path_to_exit = self.find_path(self.cat_pos,self.exit)
-        path_rat_to_exit = self.find_path(self.rat_pos,self.exit)
 
         to_rat = len(path_to_rat)
         to_exit = len(path_to_exit)
-        rat_to_exit = len(path_rat_to_exit)
         
-        if(self.level == 0):
-            if (to_rat <= 2):
-                new_pos = self.rat_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-                self.cat_pos = new_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
-                return
-        elif(self.level == 1):    
-            if (to_rat <= 3):
-                new_pos = self.rat_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-                self.cat_pos = new_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
-                return
-        else:
-            if (to_rat <= 4):
-                new_pos = self.rat_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
-                self.cat_pos = new_pos
-                self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
-                return
+        if (to_rat < 2):
+            new_pos = self.rat_pos
+            self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
+            self.cat_pos = new_pos
+            self.grid[self.cat_pos[0]][self.cat_pos[1]] = 'T'
+            return
+
             
         if (to_rat < to_exit):
             new_pos = path_to_rat[1]
         else:
+            if (len(path_to_exit) <= 1):
+                new_pos = self.exit
+                return
             new_pos = path_to_exit[1]
 
         self.grid[self.cat_pos[0]][self.cat_pos[1]] = '-'
